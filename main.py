@@ -1,44 +1,57 @@
-# System_Lock v2.0
-# 2024 / 8 / 20
+# System_Lock v3.0
+# 2024 / X / XX
 # written by ael2177
 
 import tkinter
 import tkinter.messagebox
-import tkinter.simpledialog
 import keyboard
 import json
 import os
 
 # functions
 def Prevent_Security_management():
-    os.system('shutdown -s -t 0')
+    os.system(command)
+
+def Config_Loder():
+    global command
+    global password
+
+    with open('config.json', mode = 'r', encoding = 'utf-8') as File:
+        config = json.load(File)
+        command = config['command']
+        password = config['password']
 
 def Password_Judgement():
     Password = Password_input.get()
-    if Password == Password_Load():
+    if Password == password:
         SCREEN.quit()
         SCREEN.destroy()
 
     else:
         tkinter.messagebox.showinfo(title = '', message = 'The password is wrong!')
 
-def Password_Load():
-    with open('Password.json', mode = 'r', encoding = 'utf-8') as File:
-        dict = json.load(File)
-        Password = dict['Password']
-        return Password
+# In development
+# def Password_Loadr():
+#     with open('Password.json', mode = 'r', encoding = 'utf-8') as File:
+#         dict = json.load(File)
+#         Password = dict['Password']
+#         return Password
 
 # hotkeys
 # example:
 # keyboard.add_hotkey('ctrl+alt+delete', Prevent_Security_management) # Security_management
 
+keyboard.add_hotkey('windows+tab', Prevent_Security_management) # Switch_Desktop
 
+# start
+Config_Loder()
 keyboard.add_hotkey('ctrl+alt+enter', Password_Judgement)
 
 # main screen
 SCREEN = tkinter.Tk()
 
 SCREEN.attributes('-fullscreen', True)
+SCREEN.attributes('-topmost', True)
 
 Text = tkinter.Label(SCREEN, text = 'Please enter password :')
 Text.pack()
