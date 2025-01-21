@@ -1,12 +1,13 @@
-# System_Lock v3.0
-# 2024 / X / XX
-# written by ael2177
+# System_Lock v4.0
+# 2025 / 1 / 21
+# written by semiarce(ael2177)
 
 import tkinter
 import tkinter.messagebox
 import keyboard
 import json
 import os
+import psutil
 
 # functions
 def Prevent_Security_management():
@@ -30,6 +31,19 @@ def Password_Judgement():
     else:
         tkinter.messagebox.showinfo(title = '', message = 'The password is wrong!')
 
+def USB_Unlock():
+    for item in psutil.disk_partitions():
+        if 'removable' in item.opts:
+            driver, opts = item.device, item.opts
+            try:
+                pwd_file = open(driver + 'pwd.txt')
+                pwd = pwd_file.read()
+                if pwd == password:
+                    SCREEN.quit()
+                    SCREEN.destroy()
+                    print('Lock has been unlocked')
+            except IOError:
+                pass
 # In development
 # def Password_Loadr():
 #     with open('Password.json', mode = 'r', encoding = 'utf-8') as File:
@@ -56,9 +70,11 @@ SCREEN.attributes('-topmost', True)
 Text = tkinter.Label(SCREEN, text = 'Please enter password :')
 Text.pack()
 
-Password_input = tkinter.Entry(SCREEN, show = ' ')
+Password_input = tkinter.Entry(SCREEN, show = '*')
 Password_input.pack()
 
 SCREEN.protocol('WM_DELETE_WINDOW', Prevent_Security_management)
+
+USB_Unlock()
 
 SCREEN.mainloop()
